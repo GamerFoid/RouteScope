@@ -1,4 +1,4 @@
-# RouteScope — a guided tour
+﻿# RouteScope — a guided tour
 
 ![Walkthrough](walkthrough.gif)
 
@@ -14,7 +14,7 @@ RouteScope asks one question: **how should traffic be captured?**
 | Answer | Pick it when |
 | --- | --- |
 | **Process mode** | You want to proxy a game or a launcher that has no proxy settings. Needs administrator. |
-| **App proxy** | You would rather not run as administrator, and the app understands proxies (browsers, Discord, dev tools). |
+| **App proxy** | You would rather not run as administrator, and the app understands proxies (browsers, Discord, dev tools). Everything that connects to the local port uses the full route. |
 | **Whole computer** | You genuinely want every app routed. |
 
 Keep **Process mode** unless you have a reason not to. You can switch at any time.

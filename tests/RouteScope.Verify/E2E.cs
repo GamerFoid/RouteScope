@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using RouteScope.Core;
 using RouteScope.Core.Models;
@@ -122,8 +122,17 @@ public static class E2E
                 $"exit {matched.exitCode}");
 
             // ----------------------------------------------------------- unmatched
-            var direct = await RunHttpViaProxy(port);
-            Check("unmatched process (powershell) still works", direct.ok, direct.detail);
+            // App proxy hands out a local port: anything that connects to it did so because it
+            // was pointed there, so it uses the full route. A non-target process reaching the
+            // port must therefore ALSO be proxied (and blocked by the stand-in).
+            var viaPort = await RunHttpViaProxy(port);
+            Check("non-target process using the port is proxied too", !viaPort.ok, viaPort.detail);
+
+            // The isolation promise still holds: traffic that does not use the port is
+            // untouched, so a plain direct request from the same process succeeds.
+            var direct = await RunCurl(port, useProxy: false);
+            Check("direct traffic (not using the port) is unaffected", direct.exitCode == 0,
+                $"exit {direct.exitCode}");
 
             // ------------------------------------------------------- dashboard api
             await Task.Delay(2200);
@@ -133,7 +142,9 @@ public static class E2E
             clash.Dispose();
 
             var config = File.ReadAllText(AppPaths.RuntimeConfigFile);
-            Check("config contains process rule", config.Contains("\"process_name\""), "");
+            Check("config sends everything to the proxy", config.Contains("\"final\": \"proxy\""), "");
+            Check("config does not filter the route by process",
+                !config.Contains("\"process_name\""), "");
             Check("config chains to 10808", config.Contains("\"server_port\": 10808"), "");
 
             await engine.StopAsync();

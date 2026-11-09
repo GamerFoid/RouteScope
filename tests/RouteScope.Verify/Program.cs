@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using RouteScope.Core;
 using RouteScope.Core.Engine;
@@ -83,7 +83,9 @@ var excluded = new List<string> { @"(?i)^C:\\Program Files\\Proxy\\Proxy.exe$" }
 foreach (var mode in new[] { CaptureMode.AppProxy, CaptureMode.Transparent, CaptureMode.SystemProxy })
 {
     state.Mode = mode;
-    var routeEverything = mode != CaptureMode.AppProxy;
+    // Use the production mapping, not a copy of it: a test that re-implements the rule cannot
+    // catch the rule being wrong.
+    var routeEverything = RouteEngine.RoutesEverything(mode, state.Settings.Advanced);
     var json = SingBoxConfigBuilder.Build(new BuildContext
     {
         State = state,
@@ -103,8 +105,9 @@ foreach (var mode in new[] { CaptureMode.AppProxy, CaptureMode.Transparent, Capt
 
     if (mode == CaptureMode.AppProxy)
     {
-        Check("app proxy: targets become process rules", json.Contains("process_path_regex"));
-        Check("app proxy: unmatched traffic stays direct", json.Contains("\"final\": \"direct\""));
+        // The port IS the opt-in: everything that reaches it uses the route.
+        Check("app proxy: everything reaching the port is proxied",
+            json.Contains("\"final\": \"proxy\""));
         Check("app proxy: no tun adapter", !json.Contains("\"type\": \"tun\""));
     }
 
@@ -640,6 +643,68 @@ Console.WriteLine("\n== managed-client classification ==");
     // The regression: an OpenVPN entry must never be handed to the Psiphon startup loop.
     Check("openvpn is not mistaken for psiphon", !new ExternalProxy { Type = "OpenVPN" }.IsPsiphon);
     Check("wireguard is not mistaken for psiphon", !new ExternalProxy { Type = "WireGuard" }.IsPsiphon);
+}
+// ------------------------------------------- app proxy routes everything
+Console.WriteLine("\n== app proxy routing ==");
+{
+    // App proxy hands out a local port. Whatever connects to it was pointed there by the
+    // user, so the FULL chain must be used. Regression: process filtering made a browser
+    // using 127.0.0.1:<port> go direct while the chain looked healthy.
+    var apState = new AppState { Mode = CaptureMode.AppProxy, Route = RouteKind.External };
+
+    var hop1 = new ExternalProxy { Name = "first", Host = "127.0.0.1", Port = 10808, Type = "SOCKS5" };
+    var hop2 = new ExternalProxy { Name = "second", Host = "127.0.0.1", Port = 10820, Type = "SOCKS5" };
+    apState.Externals.Add(hop1);
+    apState.Externals.Add(hop2);
+    apState.ActiveExternalId = hop1.Id;
+    apState.Chain.Add(new ChainHop { Kind = RouteKind.External, RefId = hop2.Id });
+    apState.Targets.Add(new ProxyTarget { Kind = TargetKind.Folder, Value = @"C:\Games\Thing" });
+
+    var apJson = SingBoxConfigBuilder.Build(new BuildContext
+    {
+        State = apState,
+        ProxyHops = new List<RouteHop> { RouteHop.From(hop1), RouteHop.From(hop2) },
+        RouteEverything = true,          // App proxy must set this
+        MixedPort = 47890,
+        ClashApiPort = 47891,
+        ClashSecret = "test",
+        ExcludedProcessRegexes = new List<string> { @"(?i)^C:\\Apps\\client.exe$" },
+    });
+
+    Check("app proxy: final outbound is the proxy", apJson.Contains("\"final\": \"proxy\""));
+    Check("app proxy: no process-path filtering of the route",
+        !apJson.Contains("process_path_regex\": [\n"));
+    Check("app proxy: chain hop 2 detours through hop 1", apJson.Contains("\"detour\": \"chain-0\""));
+    Check("app proxy: the upstream client is still kept out", apJson.Contains("client.exe"));
+
+    // Same route in process mode must produce the same final.
+    var pmState = new AppState { Mode = CaptureMode.Process, Route = RouteKind.External };
+    pmState.Externals.Add(hop1);
+    pmState.Externals.Add(hop2);
+    pmState.ActiveExternalId = hop1.Id;
+    pmState.Chain.Add(new ChainHop { Kind = RouteKind.External, RefId = hop2.Id });
+
+    var pmJson = SingBoxConfigBuilder.Build(new BuildContext
+    {
+        State = pmState,
+        ProxyHops = new List<RouteHop> { RouteHop.From(hop1), RouteHop.From(hop2) },
+        RouteEverything = true,
+        MixedPort = 47890,
+        ClashApiPort = 47891,
+        ClashSecret = "test",
+    });
+
+    Check("process mode: final outbound is the proxy", pmJson.Contains("\"final\": \"proxy\""));
+
+    // The mapping itself is the thing that was wrong, so pin it directly.
+    var adv = new AdvancedSettings();
+    Check("mode: app proxy routes everything", RouteEngine.RoutesEverything(CaptureMode.AppProxy, adv));
+    Check("mode: process routes everything", RouteEngine.RoutesEverything(CaptureMode.Process, adv));
+    Check("mode: system proxy routes everything", RouteEngine.RoutesEverything(CaptureMode.SystemProxy, adv));
+    Check("mode: TUN routes everything by default", RouteEngine.RoutesEverything(CaptureMode.Transparent, adv));
+
+    var tunOnly = new AdvancedSettings { TunOnlyTargets = true };
+    Check("mode: TUN with TunOnlyTargets does not", !RouteEngine.RoutesEverything(CaptureMode.Transparent, tunOnly));
 }
 // ------------------------------------------------------- route.exe command
 Console.WriteLine("\n== route.exe command ==");

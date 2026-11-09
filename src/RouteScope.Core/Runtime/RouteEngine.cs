@@ -210,6 +210,23 @@ public sealed class RouteEngine : IAsyncDisposable
     }
 
     /// <summary>
+    /// Should everything reaching the engine use the route, or only matching processes?
+    ///
+    /// App proxy and Process mode both answer "everything": in Process mode the driver already
+    /// decided, and in App proxy the port itself is the opt-in — an app only reaches it because
+    /// the user pointed it there. Filtering by process in App proxy silently sent such a
+    /// connection out direct, so the chain looked healthy while the traffic never entered it.
+    /// </summary>
+    public static bool RoutesEverything(CaptureMode mode, AdvancedSettings advanced) => mode switch
+    {
+        CaptureMode.SystemProxy => true,
+        CaptureMode.Process => true,
+        CaptureMode.AppProxy => true,
+        CaptureMode.Transparent => !advanced.TunOnlyTargets,
+        _ => false,
+    };
+
+    /// <summary>
     /// Makes one real request through the engine. If this fails the route is not usable, and
     /// starting interception anyway is what turns a bad route into a hung machine.
     /// </summary>
@@ -450,14 +467,7 @@ public sealed class RouteEngine : IAsyncDisposable
         }
 
         // Expand launcher/game child processes into extra path rules.
-        var routeEverything = state.Mode switch
-        {
-            CaptureMode.SystemProxy => true,
-            // Process mode already filtered at the driver; whatever reaches the engine is meant to be proxied.
-            CaptureMode.Process => true,
-            CaptureMode.Transparent => !state.Settings.Advanced.TunOnlyTargets,
-            _ => false,
-        };
+        var routeEverything = RoutesEverything(state.Mode, state.Settings.Advanced);
 
         var (childPaths, childNames) = routeEverything
             ? (new List<string>(), new List<string>())
