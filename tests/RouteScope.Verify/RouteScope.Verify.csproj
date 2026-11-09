@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>RouteScope.Verify</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\RouteScope.Core\RouteScope.Core.csproj" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\..\assets\native\nfapi.dll" Link="nfapi.dll" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

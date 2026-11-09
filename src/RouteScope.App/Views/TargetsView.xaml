@@ -1,0 +1,183 @@
+<UserControl x:Class="RouteScope.App.Views.TargetsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:RouteScope.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+             AllowDrop="True" Drop="OnDrop" DragOver="OnDragOver">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- whole-computer warning -->
+        <Border Grid.Row="0" CornerRadius="12" Padding="14,11" Margin="0,0,0,14"
+                Background="#14F5B944" BorderBrush="#38F5B944" BorderThickness="1"
+                Visibility="{Binding TargetsInUse, Converter={StaticResource BoolToVis}, ConverterParameter=invert}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE7BA;" Style="{StaticResource Icon}" FontSize="14"
+                           Foreground="{StaticResource B.Warning}" Margin="0,0,10,0" />
+                <TextBlock Text="{Binding TargetsUnusedMessage}" TextWrapping="Wrap" MaxWidth="720"
+                           FontSize="12" VerticalAlignment="Center"
+                           Foreground="{StaticResource B.Text.Secondary}" />
+            </StackPanel>
+        </Border>
+
+        <!-- toolbar -->
+        <Grid Grid.Row="1" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Style="{StaticResource Btn.Secondary}" Command="{Binding AddFolderCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE8B7;" Style="{StaticResource Icon}" FontSize="13" Margin="0,0,8,0"
+                               Foreground="{StaticResource B.Accent}" />
+                    <TextBlock Text="Folder" />
+                </StackPanel>
+            </Button>
+
+            <Button Grid.Column="1" Style="{StaticResource Btn.Secondary}" Margin="8,0,0,0"
+                    Command="{Binding AddApplicationCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xECAA;" Style="{StaticResource Icon}" FontSize="13" Margin="0,0,8,0"
+                               Foreground="{StaticResource B.Accent}" />
+                    <TextBlock Text="Application" />
+                </StackPanel>
+            </Button>
+
+            <Button Grid.Column="2" Style="{StaticResource Btn.Secondary}" Margin="8,0,0,0"
+                    Click="PickRunningApp_Click">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE71D;" Style="{StaticResource Icon}" FontSize="13" Margin="0,0,8,0"
+                               Foreground="{StaticResource B.Accent}" />
+                    <TextBlock Text="Running app" />
+                </StackPanel>
+            </Button>
+
+            <TextBlock Grid.Column="3" Text="or drag an .exe / folder anywhere on this page"
+                       Style="{StaticResource Text.Caption}" VerticalAlignment="Center"
+                       HorizontalAlignment="Right" />
+        </Grid>
+
+        <!-- list -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="0,0,10,0">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Targets}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource Card.Tight}" Padding="14,12" Margin="0,0,0,10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" Width="38" Height="38" CornerRadius="10"
+                                            Background="{StaticResource B.Bg.Elevated}">
+                                        <Grid>
+                                            <TextBlock Text="{Binding Glyph}"
+                                                       Style="{StaticResource Icon}"
+                                                       FontSize="16" Foreground="{StaticResource B.Accent}"
+                                                       Visibility="{Binding Value, Converter={StaticResource NoIconVis}}" />
+                                            <Image Source="{Binding Value, Converter={StaticResource ExeIcon}}"
+                                                   Width="24" Height="24" Stretch="Uniform"
+                                                   RenderOptions.BitmapScalingMode="HighQuality" />
+                                        </Grid>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" Margin="13,0,12,0" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding EffectiveName}" FontSize="13.5"
+                                                       FontWeight="SemiBold" VerticalAlignment="Center" />
+                                            <Border Background="{StaticResource B.Bg.Active}" CornerRadius="6"
+                                                    Padding="6,1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding KindLabel}" FontSize="9.5"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                                            </Border>
+                                            <Border Background="{StaticResource B.Accent.Soft}" CornerRadius="6"
+                                                    Padding="6,1" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                    Visibility="{Binding HasLiveConnections, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock FontSize="9.5" FontWeight="Bold"
+                                                           Foreground="{StaticResource B.Accent}">
+                                                    <Run Text="{Binding LiveConnections, Mode=OneWay}" /><Run Text=" live" />
+                                                </TextBlock>
+                                            </Border>
+                                            <Border Background="{StaticResource B.Success.Soft}" CornerRadius="6"
+                                                    Padding="6,1" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                    Visibility="{Binding IsVerified, Converter={StaticResource BoolToVis}}"
+                                                    ToolTip="RouteScope has seen this app's traffic going through the proxy.">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE73E;" Style="{StaticResource Icon}"
+                                                               FontSize="9" Foreground="{StaticResource B.Success}"
+                                                               Margin="0,0,4,0" />
+                                                    <TextBlock Text="proxied" FontSize="9.5" FontWeight="Bold"
+                                                               Foreground="{StaticResource B.Success}" />
+                                                </StackPanel>
+                                            </Border>
+                                            <Border Background="{StaticResource B.Warning.Soft}" CornerRadius="6"
+                                                    Padding="6,1" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                    Visibility="{Binding IsMissing, Converter={StaticResource BoolToVis}}"
+                                                    ToolTip="This path does not exist right now. It may be on a drive that is not connected.">
+                                                <TextBlock Text="missing" FontSize="9.5" FontWeight="Bold"
+                                                           Foreground="{StaticResource B.Warning}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Text.Caption}"
+                                                   FontWeight="Normal" Margin="0,3,0,0"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <CheckBox Grid.Column="2" Style="{StaticResource Switch}"
+                                              IsChecked="{Binding Enabled, Mode=TwoWay}"
+                                              VerticalAlignment="Center" Margin="0,0,10,0"
+                                              ToolTip="Route this target" />
+
+                                    <Button Grid.Column="3" Style="{StaticResource Btn.Icon}" Click="TargetMenu_Click"
+                                            Tag="{Binding}" ToolTip="More">
+                                        <TextBlock Text="&#xE712;" Style="{StaticResource Icon}" FontSize="13" />
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- empty state -->
+                <Border Style="{StaticResource Card}" Padding="34,40"
+                        Visibility="{Binding HasNoTargets, Converter={StaticResource BoolToVis}}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <Border Width="64" Height="64" CornerRadius="18"
+                                Background="{StaticResource B.Bg.Elevated}" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE8B7;" Style="{StaticResource Icon}" FontSize="26"
+                                       Foreground="{StaticResource B.Accent}" />
+                        </Border>
+                        <TextBlock Text="Nothing to route yet" Style="{StaticResource Text.H2}"
+                                   HorizontalAlignment="Center" Margin="0,18,0,0" />
+                        <TextBlock Text="Drop a folder or an .exe here. RouteScope will send only those programs through the proxy — everything else on your PC stays direct."
+                                   Style="{StaticResource Text.Secondary}" TextAlignment="Center"
+                                   MaxWidth="440" Margin="0,8,0,0" />
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                            <Button Content="Choose a folder" Style="{StaticResource Btn.Primary}"
+                                    Command="{Binding AddFolderCommand}" />
+                            <Button Content="Choose an app" Style="{StaticResource Btn.Secondary}"
+                                    Command="{Binding AddApplicationCommand}" Margin="10,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
+

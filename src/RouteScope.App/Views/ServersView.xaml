@@ -1,0 +1,516 @@
+﻿<UserControl x:Class="RouteScope.App.Views.ServersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:RouteScope.App.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:MainViewModel}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,10,0">
+        <StackPanel>
+
+            <!-- capture mode now lives in Settings -->
+            <Border Style="{StaticResource Card.Tight}" Padding="14,11" Margin="0,0,0,16">
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="12"
+                                   Foreground="{StaticResource B.Accent}" Margin="0,0,9,0"
+                                   VerticalAlignment="Center" />
+                        <TextBlock Text="Capture mode" FontSize="11.5" VerticalAlignment="Center"
+                                   Foreground="{StaticResource B.Text.Tertiary}" />
+                        <TextBlock Text="{Binding ModeSummary}" FontSize="11.5" FontWeight="SemiBold"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding ModeHint}" FontSize="11" VerticalAlignment="Center"
+                                   Foreground="{StaticResource B.Text.Tertiary}" Margin="14,0,0,0"
+                                   TextTrimming="CharacterEllipsis" MaxWidth="480" />
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right" Content="Change" Style="{StaticResource Btn.Ghost}"
+                            FontSize="11" Command="{Binding NavigateCommand}" CommandParameter="Settings" />
+                </Grid>
+            </Border>
+
+            <!-- ========================= the route ========================= -->
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="The route" Style="{StaticResource Text.H3}" VerticalAlignment="Center" />
+                            <Border Style="{StaticResource Chip}" Padding="8,2" Margin="9,0,0,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="proxy over proxy" FontSize="9.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                            </Border>
+                        </StackPanel>
+                        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Text="{Binding ChainSummary}" FontSize="10.5"
+                                   Foreground="{StaticResource B.Text.Tertiary}" />
+                    </Grid>
+
+                    <TextBlock Text="This is the exact path your apps take. Traffic is tunnelled through each step in order and exits from the last one."
+                               Style="{StaticResource Text.Secondary}" Margin="0,6,0,14" />
+
+                    <!-- first hop: whatever is selected below -->
+                    <Border Background="{StaticResource B.Bg.Sunken}" CornerRadius="11" Padding="13,10"
+                            BorderBrush="{StaticResource B.Border.Subtle}" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Width="24" Height="24" CornerRadius="12" Background="{StaticResource B.Bg.Active}">
+                                <TextBlock Text="1" FontSize="10.5" FontWeight="Bold"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{StaticResource B.Text.Secondary}" />
+                            </Border>
+
+                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding BaseRouteLabel}" FontSize="12" FontWeight="SemiBold"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="First hop" FontSize="10" Margin="0,2,0,0"
+                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                            </StackPanel>
+
+                            <Border Grid.Column="2" Background="{StaticResource B.Bg.Active}" CornerRadius="6"
+                                    Padding="7,2" VerticalAlignment="Center" Margin="0,0,8,0">
+                                <TextBlock Text="{Binding BaseRouteBadge}" FontSize="9" FontWeight="SemiBold"
+                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                            </Border>
+
+                            <Button Grid.Column="3" Style="{StaticResource Btn.Icon}" Width="26" Height="26"
+                                    Command="{Binding UseDirectCommand}" ToolTip="Clear the route">
+                                <TextBlock Text="&#xE711;" Style="{StaticResource Icon}" FontSize="9" />
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <ItemsControl ItemsSource="{Binding Chain}" Margin="0,8,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource B.Bg.Sunken}" CornerRadius="11" Padding="13,10"
+                                        Margin="0,0,0,8" BorderBrush="{StaticResource B.Border.Subtle}"
+                                        BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Width="24" Height="24" CornerRadius="12"
+                                                Background="{StaticResource B.Accent.Soft}">
+                                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}"
+                                                       FontSize="10" Foreground="{StaticResource B.Accent}" />
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" FontSize="12" FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis" />
+                                            <TextBlock Text="{Binding Endpoint}" FontSize="10" Margin="0,2,0,0"
+                                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Style="{StaticResource Btn.Icon}" Width="26" Height="26"
+                                                    Command="{Binding DataContext.TestChainHopPingCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="Real ping through everything above this hop">
+                                                <TextBlock Text="&#xE916;" Style="{StaticResource Icon}" FontSize="10" />
+                                            </Button>
+                                            <Border Background="{StaticResource B.Bg.Active}" CornerRadius="7"
+                                                    Padding="8,4" Margin="5,0,7,0" VerticalAlignment="Center"
+                                                    MinWidth="58">
+                                                <TextBlock Text="{Binding PingLabel}" FontSize="9.5" FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center"
+                                                           Foreground="{Binding PingBrushKey, Converter={StaticResource BrushKey}}" />
+                                            </Border>
+                                            <Button Style="{StaticResource Btn.Icon}" Width="26" Height="26"
+                                                    Command="{Binding DataContext.MoveChainHopUpCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}" ToolTip="Move up">
+                                                <TextBlock Text="&#xE70E;" Style="{StaticResource Icon}" FontSize="9" />
+                                            </Button>
+                                            <Button Style="{StaticResource Btn.Icon}" Width="26" Height="26"
+                                                    Command="{Binding DataContext.MoveChainHopDownCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}" ToolTip="Move down">
+                                                <TextBlock Text="&#xE70D;" Style="{StaticResource Icon}" FontSize="9" />
+                                            </Button>
+                                            <Button Style="{StaticResource Btn.Icon}" Width="26" Height="26"
+                                                    Command="{Binding DataContext.RemoveChainHopCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}" ToolTip="Remove this hop">
+                                                <TextBlock Text="&#xE711;" Style="{StaticResource Icon}" FontSize="9" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock FontSize="10.5" Margin="2,4,0,0" Foreground="{StaticResource B.Text.Tertiary}"
+                               Text="Use the link button on any proxy or server below to add another hop on top." />
+                </StackPanel>
+            </Border>
+
+            <!-- ======================== local proxies ======================== -->
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Local proxies" Style="{StaticResource Text.H3}" VerticalAlignment="Center" />
+                            <Border Style="{StaticResource Chip}" Padding="8,2" Margin="9,0,0,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="no extra engine" FontSize="9.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                            </Border>
+                        </StackPanel>
+                        <Button HorizontalAlignment="Right" Content="+ Add a local proxy"
+                                Style="{StaticResource Btn.Ghost}" FontSize="11"
+                                Command="{Binding AddExternalCommand}" />
+                    </Grid>
+                    <TextBlock Text="Any SOCKS5 or HTTP proxy already running on this machine. Scanning checks every listening port, not a fixed list."
+                               Style="{StaticResource Text.Secondary}" Margin="0,6,0,14" />
+
+                    <ItemsControl ItemsSource="{Binding LocalProxies}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Grid.Column="0" Style="{StaticResource SelectCard}" Padding="13,10"
+                                            HorizontalContentAlignment="Stretch"
+                                            Command="{Binding DataContext.SelectExternalCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            Tag="{Binding IsActive}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Grid.Column="0" Width="8" Height="8" VerticalAlignment="Center"
+                                                     Margin="0,0,12,0"
+                                                     Fill="{Binding StatusBrushKey, Converter={StaticResource BrushKey}}" />
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding Name}" FontSize="12.5" FontWeight="SemiBold" />
+                                                <TextBlock FontSize="10.5" Margin="0,2,0,0"
+                                                           Foreground="{StaticResource B.Text.Tertiary}">
+                                                    <Run Text="{Binding Endpoint, Mode=OneWay}" />
+                                                    <Run Text=" · " />
+                                                    <Run Text="{Binding StatusText, Mode=OneWay}" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                <TextBlock Text="{Binding PingLabel}" FontSize="10.5" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" Margin="0,0,12,0"
+                                                           Foreground="{Binding PingBrushKey, Converter={StaticResource BrushKey}}" />
+                                                <Border Style="{StaticResource RadioDot}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                                                Margin="8,0,0,0">
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.AddChainHopCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Add to the route">
+                                            <TextBlock Text="&#xE71B;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.TestRealPingCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Real ping — open a tunnel through this proxy">
+                                            <TextBlock Text="&#xE916;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.EditExternalCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Edit">
+                                            <TextBlock Text="&#xE70F;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.RemoveExternalCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Remove">
+                                            <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Border Background="{StaticResource B.Bg.Sunken}" CornerRadius="7"
+                                                Padding="9,5" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                MinWidth="62">
+                                            <TextBlock Text="{Binding RealPingLabel}" FontSize="10" FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center"
+                                                       Foreground="{Binding RealPingBrushKey, Converter={StaticResource BrushKey}}" />
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <Button Content="+ Add a local proxy" Style="{StaticResource Btn.Ghost}" FontSize="11.5"
+                                Command="{Binding AddExternalCommand}" />
+                        <TextBlock Text="Quick add:" FontSize="10.5" VerticalAlignment="Center" Margin="16,0,8,0"
+                                   Foreground="{StaticResource B.Text.Tertiary}" />
+                        <Button Content="v2rayN" Style="{StaticResource ModeChip}" FontSize="10"
+                                Command="{Binding AddExternalPresetCommand}" CommandParameter="v2rayN|10808" />
+                        <Button Content="Clash" Style="{StaticResource ModeChip}" FontSize="10"
+                                Command="{Binding AddExternalPresetCommand}" CommandParameter="Clash|7890" />
+                        <Button Content="Psiphon" Style="{StaticResource ModeChip}" FontSize="10"
+                                Command="{Binding AddPsiphonCommand}"
+                                ToolTip="Psiphon, started by RouteScope. Chain it after a local proxy when its servers are blocked." />
+
+                    </StackPanel>
+
+                    <Button Content="Scan for local proxies" Style="{StaticResource Btn.Ghost}" FontSize="11.5"
+                            HorizontalAlignment="Left" Command="{Binding DetectProxiesCommand}" Margin="0,6,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- ========================== servers ========================== -->
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0" AllowDrop="True"
+                    DragOver="OnServersDragOver" Drop="OnServersDrop">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Proxy servers" Style="{StaticResource Text.H3}" VerticalAlignment="Center" />
+                            <Border Style="{StaticResource Chip}" Padding="8,2" Margin="9,0,0,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Servers.Count}" FontSize="9.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                            </Border>
+                        </StackPanel>
+                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Paste a link, or drop a .conf / .ovpn" FontSize="10.5"
+                                       VerticalAlignment="Center" Margin="0,0,12,0"
+                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                            <Button Content="Add WireGuard" Style="{StaticResource Btn.Ghost}" FontSize="11"
+                                    Command="{Binding AddWireGuardCommand}"
+                                    ToolTip="Import a WireGuard .conf — the engine dials it, no admin needed" />
+                            <Button Content="Add OpenVPN" Style="{StaticResource Btn.Ghost}" FontSize="11"
+                                    Margin="6,0,0,0" Command="{Binding AddOpenVpnCommand}"
+                                    ToolTip="Import an .ovpn — needs OpenVPN installed and administrator rights" />
+                        </StackPanel>
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding Servers}" Margin="0,14,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button Grid.Column="0" Style="{StaticResource SelectCard}" Padding="13,10"
+                                            HorizontalContentAlignment="Stretch"
+                                            Command="{Binding DataContext.SelectServerCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            Tag="{Binding IsActive}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Grid.Column="0" Background="{StaticResource B.Accent.Soft}"
+                                                    CornerRadius="6" Padding="6,3" VerticalAlignment="Center"
+                                                    Margin="0,0,12,0" MinWidth="52">
+                                                <TextBlock Text="{Binding Badge}" FontSize="8.5"
+                                                           FontWeight="Bold" HorizontalAlignment="Center"
+                                                           Foreground="{StaticResource B.Accent}" />
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="{Binding Name}" FontSize="12.5" FontWeight="SemiBold"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding Endpoint}" FontSize="10.5" Margin="0,2,0,0"
+                                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                <TextBlock Text="{Binding LatencyLabel}" FontSize="10.5" FontWeight="SemiBold"
+                                                           VerticalAlignment="Center" Margin="0,0,12,0"
+                                                           Foreground="{Binding LatencyBrushKey, Converter={StaticResource BrushKey}}" />
+                                                <Border Style="{StaticResource RadioDot}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"
+                                                Margin="8,0,0,0">
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.AddServerToChainCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Add to the route">
+                                            <TextBlock Text="&#xE71B;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.TestRealPingCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                ToolTip="Real ping — open a tunnel through this server">
+                                            <TextBlock Text="&#xE916;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.EditServerCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Edit">
+                                            <TextBlock Text="&#xE70F;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.CopyNodeLinkCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Copy the share link">
+                                            <TextBlock Text="&#xE8C8;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                Command="{Binding DataContext.RemoveServerCommand,
+                                                          RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}" ToolTip="Remove">
+                                            <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" FontSize="11" />
+                                        </Button>
+                                        <Border Background="{StaticResource B.Bg.Sunken}" CornerRadius="7"
+                                                Padding="9,5" Margin="6,0,0,0" VerticalAlignment="Center"
+                                                MinWidth="62">
+                                            <TextBlock Text="{Binding RealPingLabel}" FontSize="10" FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center"
+                                                       Foreground="{Binding RealPingBrushKey, Converter={StaticResource BrushKey}}" />
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Background="{StaticResource B.Bg.Sunken}" CornerRadius="12" Padding="16,18"
+                            Margin="0,4,0,10"
+                            Visibility="{Binding Servers.Count, Converter={StaticResource CountToVis}, ConverterParameter=invert}">
+                        <StackPanel>
+                            <TextBlock Text="No servers yet" FontSize="12" FontWeight="SemiBold"
+                                       Foreground="{StaticResource B.Text.Secondary}" />
+                            <TextBlock Text="Paste a share link below, add a subscription, or just use a local proxy above."
+                                       FontSize="10.5" Margin="0,4,0,0" TextWrapping="Wrap"
+                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Style="{StaticResource Input}" Tag="vless://… / vmess://… / ss://…"
+                                 Text="{Binding NewLinkText, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Column="1" Content="Add server" Style="{StaticResource Btn.Primary}"
+                                Margin="8,0,0,0" Padding="18,9"
+                                Command="{Binding AddNodesFromTextCommand}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- ======================== subscriptions ======================== -->
+            <Border Style="{StaticResource Card}" Margin="0,14,0,0">
+                <StackPanel>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Subscriptions" Style="{StaticResource Text.H3}" VerticalAlignment="Center" />
+                            <Border Style="{StaticResource Chip}" Padding="8,2" Margin="9,0,0,0"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Subscriptions.Count}" FontSize="9.5" FontWeight="SemiBold"
+                                           Foreground="{StaticResource B.Text.Tertiary}" />
+                            </Border>
+                        </StackPanel>
+                        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Center"
+                                   Text="Saved links stay here and can be refreshed any time"
+                                   FontSize="10.5" Foreground="{StaticResource B.Text.Tertiary}" />
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding Subscriptions}" Margin="0,14,0,0">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource B.Bg.Sunken}" CornerRadius="11" Padding="13,10"
+                                        Margin="0,0,0,8" BorderBrush="{StaticResource B.Border.Subtle}"
+                                        BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Width="28" Height="28" CornerRadius="9"
+                                                Background="{StaticResource B.Bg.Active}">
+                                            <TextBlock Text="&#xE896;" Style="{StaticResource Icon}" FontSize="12"
+                                                       Foreground="{StaticResource B.Accent2}" />
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" />
+                                            <TextBlock FontSize="10" Margin="0,2,0,0"
+                                                       Foreground="{StaticResource B.Text.Tertiary}">
+                                                <Run Text="{Binding CountLabel, Mode=OneWay}" />
+                                                <Run Text=" · " />
+                                                <Run Text="{Binding LastUpdatedLabel, Mode=OneWay}" />
+                                            </TextBlock>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Button Content="Update" Style="{StaticResource Btn.Secondary}"
+                                                    FontSize="10.5" Padding="11,5"
+                                                    Command="{Binding DataContext.UpdateSubscriptionCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="Download the server list directly" />
+                                            <Button Content="Update via proxy" Style="{StaticResource Btn.Ghost}"
+                                                    FontSize="10.5" Padding="11,5" Margin="6,0,0,0"
+                                                    Command="{Binding DataContext.UpdateSubscriptionViaProxyCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="Download through the selected local proxy, for when the host is blocked" />
+                                            <Button Style="{StaticResource Btn.Icon}" Width="28" Height="28"
+                                                    Margin="6,0,0,0"
+                                                    Command="{Binding DataContext.RemoveSubscriptionCommand,
+                                                              RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}" ToolTip="Remove this subscription">
+                                                <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" FontSize="11" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Style="{StaticResource Input}" Tag="https://…/sub"
+                                 Text="{Binding NewSubscriptionUrl, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Grid.Column="1" Content="Add subscription" Style="{StaticResource Btn.Primary}"
+                                Margin="8,0,0,0" Padding="18,9"
+                                Command="{Binding AddSubscriptionCommand}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Height="20" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

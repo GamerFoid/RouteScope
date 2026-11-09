@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <RootNamespace>RouteScope.App</RootNamespace>
+    <AssemblyName>RouteScope</AssemblyName>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <PublishSingleFile>false</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RouteScope.Core\RouteScope.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\logo.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="..\..\assets\native\nfapi.dll" Link="nfapi.dll" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\assets\native\nfdriver.sys" Link="nfdriver.sys" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
+
+

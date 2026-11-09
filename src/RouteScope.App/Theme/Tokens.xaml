@@ -1,0 +1,202 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+
+    <!-- ============================================================
+         RouteScope design tokens
+         Dark is the primary theme; light overrides live in Light.xaml.
+         ============================================================ -->
+
+    <!-- Palette -->
+    <Color x:Key="C.Bg.Base">#FF0A0B0F</Color>
+    <Color x:Key="C.Bg.Sunken">#FF070810</Color>
+    <Color x:Key="C.Bg.Surface">#FF111320</Color>
+    <Color x:Key="C.Bg.Elevated">#FF171A29</Color>
+    <Color x:Key="C.Bg.Hover">#FF1D2132</Color>
+    <Color x:Key="C.Bg.Active">#FF232840</Color>
+
+    <Color x:Key="C.Border.Subtle">#FF1E2231</Color>
+    <Color x:Key="C.Border.Default">#FF262B3D</Color>
+    <Color x:Key="C.Border.Strong">#FF333A52</Color>
+
+    <Color x:Key="C.Text.Primary">#FFF2F4FA</Color>
+    <Color x:Key="C.Text.Secondary">#FF9BA4BC</Color>
+    <Color x:Key="C.Text.Tertiary">#FF6A7288</Color>
+    <Color x:Key="C.Text.Inverse">#FF0A0B0F</Color>
+
+    <Color x:Key="C.Accent">#FF7C6BFF</Color>
+    <Color x:Key="C.Accent.Hover">#FF8E7FFF</Color>
+    <Color x:Key="C.Accent.Pressed">#FF6A58F0</Color>
+    <Color x:Key="C.Accent.Soft">#337C6BFF</Color>
+    <Color x:Key="C.Accent.Glow">#4D7C6BFF</Color>
+    <Color x:Key="C.Accent2">#FF45C4F5</Color>
+
+    <Color x:Key="C.Success">#FF3DDC97</Color>
+    <Color x:Key="C.Success.Soft">#263DDC97</Color>
+    <Color x:Key="C.Warning">#FFF5B944</Color>
+    <Color x:Key="C.Warning.Soft">#26F5B944</Color>
+    <Color x:Key="C.Danger">#FFF87171</Color>
+    <Color x:Key="C.Danger.Soft">#26F87171</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="B.Bg.Base" Color="{StaticResource C.Bg.Base}" />
+    <SolidColorBrush x:Key="B.Bg.Sunken" Color="{StaticResource C.Bg.Sunken}" />
+    <SolidColorBrush x:Key="B.Bg.Surface" Color="{StaticResource C.Bg.Surface}" />
+    <SolidColorBrush x:Key="B.Bg.Elevated" Color="{StaticResource C.Bg.Elevated}" />
+    <SolidColorBrush x:Key="B.Bg.Hover" Color="{StaticResource C.Bg.Hover}" />
+    <SolidColorBrush x:Key="B.Bg.Active" Color="{StaticResource C.Bg.Active}" />
+
+    <SolidColorBrush x:Key="B.Border.Subtle" Color="{StaticResource C.Border.Subtle}" />
+    <SolidColorBrush x:Key="B.Border.Default" Color="{StaticResource C.Border.Default}" />
+    <SolidColorBrush x:Key="B.Border.Strong" Color="{StaticResource C.Border.Strong}" />
+
+    <SolidColorBrush x:Key="B.Text.Primary" Color="{StaticResource C.Text.Primary}" />
+    <SolidColorBrush x:Key="B.Text.Secondary" Color="{StaticResource C.Text.Secondary}" />
+    <SolidColorBrush x:Key="B.Text.Tertiary" Color="{StaticResource C.Text.Tertiary}" />
+    <SolidColorBrush x:Key="B.Text.Inverse" Color="{StaticResource C.Text.Inverse}" />
+
+    <SolidColorBrush x:Key="B.Accent" Color="{StaticResource C.Accent}" />
+    <SolidColorBrush x:Key="B.Accent.Hover" Color="{StaticResource C.Accent.Hover}" />
+    <SolidColorBrush x:Key="B.Accent.Pressed" Color="{StaticResource C.Accent.Pressed}" />
+    <SolidColorBrush x:Key="B.Accent.Soft" Color="{StaticResource C.Accent.Soft}" />
+    <SolidColorBrush x:Key="B.Accent2" Color="{StaticResource C.Accent2}" />
+
+    <SolidColorBrush x:Key="B.Success" Color="{StaticResource C.Success}" />
+    <SolidColorBrush x:Key="B.Success.Soft" Color="{StaticResource C.Success.Soft}" />
+    <SolidColorBrush x:Key="B.Warning" Color="{StaticResource C.Warning}" />
+    <SolidColorBrush x:Key="B.Warning.Soft" Color="{StaticResource C.Warning.Soft}" />
+    <SolidColorBrush x:Key="B.Danger" Color="{StaticResource C.Danger}" />
+    <SolidColorBrush x:Key="B.Danger.Soft" Color="{StaticResource C.Danger.Soft}" />
+
+    <LinearGradientBrush x:Key="B.AccentGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#FF7C6BFF" Offset="0" />
+        <GradientStop Color="#FF45C4F5" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Darker pair so white label text keeps a readable contrast ratio. -->
+    <LinearGradientBrush x:Key="B.ButtonGradient" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#FF7C6BFF" Offset="0" />
+        <GradientStop Color="#FF5A63F0" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="B.HeroGlow" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="#2E7C6BFF" Offset="0" />
+        <GradientStop Color="#007C6BFF" Offset="1" />
+    </LinearGradientBrush>
+
+    <RadialGradientBrush x:Key="B.RingGlow" Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+        <GradientStop Color="#597C6BFF" Offset="0.62" />
+        <GradientStop Color="#007C6BFF" Offset="1" />
+    </RadialGradientBrush>
+
+    <!-- Typography -->
+    <FontFamily x:Key="F.Ui">Segoe UI Variable Text, Segoe UI, Segoe UI Emoji</FontFamily>
+    <FontFamily x:Key="F.Display">Segoe UI Variable Display, Segoe UI Semibold, Segoe UI</FontFamily>
+    <FontFamily x:Key="F.Mono">Cascadia Mono, Consolas, Courier New</FontFamily>
+
+    <sys:Double x:Key="T.Display">30</sys:Double>
+    <sys:Double x:Key="T.H1">22</sys:Double>
+    <sys:Double x:Key="T.H2">16</sys:Double>
+    <sys:Double x:Key="T.H3">13.5</sys:Double>
+    <sys:Double x:Key="T.Body">13</sys:Double>
+    <sys:Double x:Key="T.Small">12</sys:Double>
+    <sys:Double x:Key="T.Tiny">11</sys:Double>
+
+    <Style x:Key="Text.Display" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Display}" />
+        <Setter Property="FontSize" Value="{StaticResource T.Display}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Primary}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="ClearType" />
+    </Style>
+
+    <Style x:Key="Text.H1" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Display}" />
+        <Setter Property="FontSize" Value="{StaticResource T.H1}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Primary}" />
+    </Style>
+
+    <Style x:Key="Text.H2" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Display}" />
+        <Setter Property="FontSize" Value="{StaticResource T.H2}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Primary}" />
+    </Style>
+
+    <Style x:Key="Text.H3" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Ui}" />
+        <Setter Property="FontSize" Value="{StaticResource T.H3}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Primary}" />
+    </Style>
+
+    <Style x:Key="Text.Body" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Ui}" />
+        <Setter Property="FontSize" Value="{StaticResource T.Body}" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Primary}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Text.Secondary" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Ui}" />
+        <Setter Property="FontSize" Value="{StaticResource T.Small}" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Secondary}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Text.Caption" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Ui}" />
+        <Setter Property="FontSize" Value="{StaticResource T.Tiny}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Tertiary}" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+    </Style>
+
+    <Style x:Key="Text.Mono" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource F.Mono}" />
+        <Setter Property="FontSize" Value="{StaticResource T.Small}" />
+        <Setter Property="Foreground" Value="{StaticResource B.Text.Secondary}" />
+    </Style>
+
+    <!-- Icon glyph -->
+    <Style x:Key="Icon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe Fluent Icons, Segoe MDL2 Assets" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Ideal" />
+        <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale" />
+    </Style>
+
+    <!-- Card -->
+    <Style x:Key="Card" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource B.Bg.Surface}" />
+        <Setter Property="BorderBrush" Value="{StaticResource B.Border.Subtle}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="20" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+    </Style>
+
+    <Style x:Key="Card.Tight" TargetType="Border" BasedOn="{StaticResource Card}">
+        <Setter Property="Padding" Value="14" />
+        <Setter Property="CornerRadius" Value="14" />
+    </Style>
+
+    <!-- Focus visual -->
+    <Style x:Key="FocusRing">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="-3" RadiusX="10" RadiusY="10"
+                               Stroke="{StaticResource B.Accent}" StrokeThickness="1.5" Opacity="0.7" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
+
+

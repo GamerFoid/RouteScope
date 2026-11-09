@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <Product>RouteScope</Product>
+    <Company>RouteScope</Company>
+    <Version>1.0.0</Version>
+    <Copyright>RouteScope</Copyright>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>$(NoWarn);CA1416;CS8981</NoWarn>
+  </PropertyGroup>
+</Project>

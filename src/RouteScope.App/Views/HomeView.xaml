@@ -1,0 +1,362 @@
+<UserControl x:Class="RouteScope.App.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:RouteScope.App.Controls"
+             xmlns:vm="clr-namespace:RouteScope.App.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,0,10,0">
+        <StackPanel>
+
+            <!-- ====================== capture mode ====================== -->
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Grid.Column="0" Style="{StaticResource ModeTile}" GroupName="ModeTiles"
+                        IsChecked="{Binding IsProcessMode, Mode=OneWay}"
+                        Command="{Binding SetModeCommand}" CommandParameter="Process"
+                        ToolTip="Process mode — only your listed apps, including games with no proxy support">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="30" Height="30" CornerRadius="9" Background="{StaticResource B.Accent.Soft}">
+                            <TextBlock Text="&#xE945;" Style="{StaticResource Icon}" FontSize="13"
+                                       Foreground="{StaticResource B.Accent}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Process mode" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="Games &amp; any app" FontSize="10" Margin="0,2,0,0"
+                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                        </StackPanel>
+                    </Grid>
+                </RadioButton>
+
+                <RadioButton Grid.Column="2" Style="{StaticResource ModeTile}" GroupName="ModeTiles"
+                        IsChecked="{Binding IsAppProxy, Mode=OneWay}"
+                        Command="{Binding SetModeCommand}" CommandParameter="AppProxy"
+                        ToolTip="App proxy — only apps launched from RouteScope, no administrator needed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="30" Height="30" CornerRadius="9" Background="{StaticResource B.Bg.Active}">
+                            <TextBlock Text="&#xE756;" Style="{StaticResource Icon}" FontSize="13"
+                                       Foreground="{StaticResource B.Accent2}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="App proxy" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="No admin needed" FontSize="10" Margin="0,2,0,0"
+                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                        </StackPanel>
+                    </Grid>
+                </RadioButton>
+
+                <RadioButton Grid.Column="4" Style="{StaticResource ModeTile}" GroupName="ModeTiles"
+                        IsChecked="{Binding IsTransparent, Mode=OneWay}"
+                        Command="{Binding SetModeCommand}" CommandParameter="Transparent"
+                        ToolTip="Whole computer (TUN) — every app on this PC is routed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="30" Height="30" CornerRadius="9" Background="{StaticResource B.Bg.Active}">
+                            <TextBlock Text="&#xE7C4;" Style="{StaticResource Icon}" FontSize="13"
+                                       Foreground="{StaticResource B.Text.Secondary}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="Whole computer" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="Everything, TUN" FontSize="10" Margin="0,2,0,0"
+                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                        </StackPanel>
+                    </Grid>
+                </RadioButton>
+
+                <RadioButton Grid.Column="6" Style="{StaticResource ModeTile}" GroupName="ModeTiles"
+                        IsChecked="{Binding IsSystemProxy, Mode=OneWay}"
+                        Command="{Binding SetModeCommand}" CommandParameter="SystemProxy"
+                        ToolTip="System proxy — sets the Windows proxy setting">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="30" Height="30" CornerRadius="9" Background="{StaticResource B.Bg.Active}">
+                            <TextBlock Text="&#xE774;" Style="{StaticResource Icon}" FontSize="13"
+                                       Foreground="{StaticResource B.Text.Secondary}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Margin="11,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="System proxy" FontSize="12" FontWeight="SemiBold" />
+                            <TextBlock Text="Windows setting" FontSize="10" Margin="0,2,0,0"
+                                       Foreground="{StaticResource B.Text.Tertiary}" />
+                        </StackPanel>
+                    </Grid>
+                </RadioButton>
+            </Grid>
+
+            <!-- ============================ hero ============================ -->
+            <Border Style="{StaticResource Card}" Padding="28,26,28,22">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="40" ShadowDepth="10" Opacity="0.35" Color="#FF000000" Direction="270" />
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- status -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Width="138" Height="138">
+                            <controls:StatusOrb IsActive="{Binding IsRunning}" Width="138" Height="138" />
+                        </Grid>
+
+                        <StackPanel Grid.Column="1" Margin="26,0,20,0" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource Chip}" Padding="9,3">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE7C4;" Style="{StaticResource Icon}" FontSize="10"
+                                                   Foreground="{StaticResource B.Accent}" Margin="0,0,6,0" />
+                                        <TextBlock Text="{Binding ModeSummary}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource B.Text.Secondary}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource Chip}" Padding="9,3" Margin="7,0,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE774;" Style="{StaticResource Icon}" FontSize="10"
+                                                   Foreground="{StaticResource B.Text.Tertiary}" Margin="0,0,6,0" />
+                                        <TextBlock Text="{Binding RouteSummary}" FontSize="11" FontWeight="SemiBold"
+                                                   MaxWidth="240" TextTrimming="CharacterEllipsis"
+                                                   Foreground="{StaticResource B.Text.Secondary}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding StatusTitle}" Style="{StaticResource Text.Display}"
+                                       Margin="0,14,0,0" />
+                            <TextBlock Text="{Binding StatusSubtitle}" Style="{StaticResource Text.Secondary}"
+                                       Margin="0,7,0,0" MaxWidth="430" HorizontalAlignment="Left" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                            <Button Content="{Binding ConnectLabel}"
+                                    Style="{StaticResource Btn.Gradient}"
+                                    Command="{Binding ToggleConnectCommand}"
+                                    MinWidth="150" Height="42" FontSize="13.5" />
+                            <Button Content="Launch my apps" Margin="0,9,0,0" Height="32" FontSize="11.5"
+                                    Command="{Binding LaunchAllCommand}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource Btn.Secondary}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsAppProxy}" Value="True" />
+                                                    <Condition Binding="{Binding IsRunning}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Grid.Row="1" Style="{StaticResource Divider}" Margin="0,22,0,0" />
+
+                    <!-- traffic -->
+                    <Grid Grid.Row="2" Margin="0,18,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Height="104" Margin="0,0,24,0">
+                            <controls:TrafficGraph Values="{Binding DownSeries}"
+                                                   Accent="{StaticResource B.Accent}"
+                                                   AccentSecondary="{StaticResource B.Accent2}" />
+                        </Grid>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <StackPanel Width="104">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74A;" Style="{StaticResource Icon}" FontSize="11"
+                                               Foreground="{StaticResource B.Accent2}" Margin="0,0,6,0" />
+                                    <TextBlock Text="UP" Style="{StaticResource Text.Caption}" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding UpSpeedText}" Margin="0,6,0,0" FontSize="17"
+                                           FontWeight="SemiBold" FontFamily="{StaticResource F.Display}" />
+                                <TextBlock Text="{Binding TotalUpText, StringFormat=total {0}}" Style="{StaticResource Text.Caption}"
+                                           Margin="0,2,0,0" FontWeight="Normal" />
+                            </StackPanel>
+
+                            <StackPanel Width="104" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE74B;" Style="{StaticResource Icon}" FontSize="11"
+                                               Foreground="{StaticResource B.Accent}" Margin="0,0,6,0" />
+                                    <TextBlock Text="DOWN" Style="{StaticResource Text.Caption}" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding DownSpeedText}" Margin="0,6,0,0" FontSize="17"
+                                           FontWeight="SemiBold" FontFamily="{StaticResource F.Display}" />
+                                <TextBlock Text="{Binding TotalDownText, StringFormat=total {0}}" Style="{StaticResource Text.Caption}"
+                                           Margin="0,2,0,0" FontWeight="Normal" />
+                            </StackPanel>
+
+                            <StackPanel Width="96" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE9D9;" Style="{StaticResource Icon}" FontSize="11"
+                                               Foreground="{StaticResource B.Text.Tertiary}" Margin="0,0,6,0" />
+                                    <TextBlock Text="OPEN" Style="{StaticResource Text.Caption}" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding ConnectionCount}" Margin="0,6,0,0" FontSize="17"
+                                           FontWeight="SemiBold" FontFamily="{StaticResource F.Display}" />
+                                <TextBlock Text="connections" Style="{StaticResource Text.Caption}"
+                                           Margin="0,2,0,0" FontWeight="Normal" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- ======================= two column cards ======================= -->
+            <Grid Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="330" />
+                </Grid.ColumnDefinitions>
+
+                <!-- routed apps -->
+                <Border Grid.Column="0" Style="{StaticResource Card}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="Routed apps" Style="{StaticResource Text.H3}" />
+                                <Border Style="{StaticResource Chip}" Padding="7,1" Margin="9,0,0,0">
+                                    <TextBlock Text="{Binding EnabledTargetsCount}" FontSize="10.5"
+                                               FontWeight="SemiBold" Foreground="{StaticResource B.Text.Secondary}" />
+                                </Border>
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource Btn.Ghost}" FontSize="11.5"
+                                    Command="{Binding NavigateCommand}" CommandParameter="Targets">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Manage" Margin="0,0,5,0" />
+                                    <TextBlock Text="&#xE72A;" Style="{StaticResource Icon}" FontSize="9" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <!-- chips -->
+                        <ItemsControl Grid.Row="1" Margin="0,16,0,0" ItemsSource="{Binding Targets}"
+                                      Visibility="{Binding HasTargets, Converter={StaticResource BoolToVis}}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="10,7" Margin="0,0,8,8">
+                                        <Border.Style>
+                                            <Style TargetType="Border" BasedOn="{StaticResource Chip}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Enabled}" Value="False">
+                                                        <Setter Property="Opacity" Value="0.42" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Glyph}" Style="{StaticResource Icon}"
+                                                       FontSize="12" Foreground="{StaticResource B.Accent}"
+                                                       Margin="0,0,7,0" />
+                                            <TextBlock Text="{Binding EffectiveName}" FontSize="12"
+                                                       MaxWidth="150" TextTrimming="CharacterEllipsis" />
+                                            <Border Background="{StaticResource B.Accent.Soft}" CornerRadius="7"
+                                                    Padding="5,1" Margin="8,0,0,0"
+                                                    Visibility="{Binding HasLiveConnections, Converter={StaticResource BoolToVis}}">
+                                                <TextBlock Text="{Binding LiveConnections}" FontSize="9.5"
+                                                           FontWeight="Bold" Foreground="{StaticResource B.Accent}" />
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- empty state -->
+                        <StackPanel Grid.Row="1" Margin="0,14,0,0"
+                                    Visibility="{Binding HasNoTargets, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="Nothing is being routed yet."
+                                       Style="{StaticResource Text.Body}" FontWeight="SemiBold" />
+                            <TextBlock Text="Add a folder — every program inside it will use the proxy, even ones with no proxy setting."
+                                       Style="{StaticResource Text.Secondary}" Margin="0,5,0,0" MaxWidth="420"
+                                       HorizontalAlignment="Left" />
+                            <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                                <Button Content="Add a folder" Style="{StaticResource Btn.Secondary}"
+                                        Command="{Binding AddFolderCommand}" />
+                                <Button Content="Add an app" Style="{StaticResource Btn.Ghost}"
+                                        Command="{Binding AddApplicationCommand}" Margin="8,0,0,0" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- destination -->
+                <Border Grid.Column="2" Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Destination" Style="{StaticResource Text.H3}" />
+                        <TextBlock Text="{Binding RouteSummary}" Style="{StaticResource Text.Body}"
+                                   Margin="0,12,0,0" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding ModeSummary}" Style="{StaticResource Text.Secondary}"
+                                   Margin="0,4,0,0" />
+
+                        <Border Style="{StaticResource Divider}" Margin="0,16,0,0" />
+
+                        <TextBlock Text="Engine" Style="{StaticResource Text.Caption}" Margin="0,14,0,0" />
+                        <TextBlock Text="{Binding EngineStatusText}" Style="{StaticResource Text.Mono}"
+                                   Margin="0,4,0,0" />
+
+                        <Button Content="Choose destination" Style="{StaticResource Btn.Secondary}"
+                                Margin="0,16,0,0" Height="34" FontSize="12"
+                                Command="{Binding NavigateCommand}" CommandParameter="Servers" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <StackPanel Height="20" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
+
